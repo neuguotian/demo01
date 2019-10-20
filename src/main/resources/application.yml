@@ -1,0 +1,16 @@
+server:
+  port: 8080
+
+
+spring:
+  datasource:
+    name: miaosha
+    url: jdbc:mysql://localhost:3306/miaosha?useUnicode=true&characterEncoding=UTF-8&useSSL=false
+    username: root
+    password:
+    type: com.alibaba.druid.pool.DruidDataSource
+    driverClassName: com.mysql.cj.jdbc.Driver
+
+mybatis:
+  mapper-locations: classpath*:mapping/*Mapper.xml
+  type-aliases-package: com.miaosha.demo.dataobject

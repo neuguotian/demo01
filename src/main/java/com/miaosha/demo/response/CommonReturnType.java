@@ -23,7 +23,7 @@ public class CommonReturnType {
         return CommonReturnType.create(result, "success");
     }
 
-    private static CommonReturnType create(Object result, String status) {
+    public static CommonReturnType create(Object result, String status) {
         final CommonReturnType commonReturnType = new CommonReturnType();
         commonReturnType.setData(result);
         commonReturnType.setStatus(status);

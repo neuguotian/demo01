@@ -37,7 +37,7 @@ public class DemoApplication {
 
     @RequestMapping("/")
     public String hello() {
-        UserDo userDo = userDoMapper.selectByPrimaryKey(1);
+        UserDo userDo = userDoMapper.selectByPrimaryKey(2);
         if (userDo == null) {
             return "userDo == null";
         }

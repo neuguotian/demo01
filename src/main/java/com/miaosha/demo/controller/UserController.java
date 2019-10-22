@@ -1,19 +1,25 @@
 package com.miaosha.demo.controller;
 
+import com.alibaba.druid.util.StringUtils;
 import com.miaosha.demo.controller.viewobject.UserVO;
 import com.miaosha.demo.error.BusinessException;
 import com.miaosha.demo.error.EmBusinessError;
 import com.miaosha.demo.response.CommonReturnType;
 import com.miaosha.demo.service.UserService;
 import com.miaosha.demo.service.model.UserModel;
+import org.apache.tomcat.util.security.MD5Encoder;
 import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.*;
+import sun.misc.BASE64Encoder;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpSession;
+import java.io.UnsupportedEncodingException;
+import java.security.MessageDigest;
+import java.security.NoSuchAlgorithmException;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.Random;
@@ -26,6 +32,7 @@ import java.util.Random;
  */
 @RestController("user")
 @RequestMapping("/user")
+@CrossOrigin(allowCredentials = "true", allowedHeaders = "*")
 public class UserController extends BaseController{
 
     @Autowired
@@ -35,8 +42,55 @@ public class UserController extends BaseController{
     @Autowired
     private HttpServletRequest httpServletRequest;
 
+
+    @RequestMapping(value = "/register", method = {RequestMethod.POST}, consumes = {CONTENT_TYPE_FORMED})
+
+    // 用户注册接口
+    public CommonReturnType register(@RequestParam(name="telephone") String telephone,
+                                     @RequestParam(name="otpCode") String otpCode,
+                                     @RequestParam(name="name") String name,
+                                     @RequestParam(name="gender") String gender,
+                                     @RequestParam(name="age") String age,
+                                     @RequestParam(name="password") String password) throws BusinessException, UnsupportedEncodingException, NoSuchAlgorithmException {
+
+
+        // 验证手机号和otpCode 符合
+        String inSessionOtpCode = (String)this.httpServletRequest.getSession().getAttribute(telephone);
+        if (!com.alibaba.druid.util.StringUtils.equals(otpCode, inSessionOtpCode)) {
+            throw new BusinessException(EmBusinessError.PARAMETER_VALIDATION_ERROR, "短信验证码不符合");
+        }
+
+
+        // 用户注册流程
+        final UserModel userModel = new UserModel();
+        userModel.setName(name);
+        userModel.setGender(Byte.valueOf(gender));
+        userModel.setAge(Integer.valueOf(age));
+        userModel.setTelephone(telephone);
+        userModel.setRegisterMode("byphone");
+        userModel.setEncrptPassword(this.encodeByMd5(password));
+
+
+        userService.register(userModel);
+
+        return CommonReturnType.create(null);
+    }
+
+    public String encodeByMd5(String str) throws NoSuchAlgorithmException, UnsupportedEncodingException {
+        // 确定计算方法
+        final MessageDigest md5 = MessageDigest.getInstance("MD5");
+        final BASE64Encoder base64Encoder = new BASE64Encoder();
+
+        // 加密字符串
+        final String newstr = base64Encoder.encode(md5.digest(str.getBytes("utf-8")));
+
+        return newstr;
+    }
+
+
+
     // 用户获取otp短信接口
-    @RequestMapping("/getotp")
+    @RequestMapping(value = "/getotp", method = {RequestMethod.POST}, consumes = {CONTENT_TYPE_FORMED})
     public CommonReturnType getOtp(@RequestParam(name="telephone") String telephone) {
         // 按照一定的规则生成otp验证码
         final Random random = new Random();

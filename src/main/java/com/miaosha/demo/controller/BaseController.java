@@ -14,10 +14,14 @@ import java.util.Map;
 /**
  * @Classname BaseController
  * @Description 公共的功能设计到基类中
+ *
  * @Date 2019/10/21 19:56
  * @Author gt
  */
 public class BaseController {
+    public final static String CONTENT_TYPE_FORMED = "application/x-www-form-urlencoded";
+
+
     // 定义exceptionhandler解决为被controller层吸收的异常. （符合spring钩子类定义的设计思想）
     // 业务逻辑的错误, 并不是服务器端不能处理
     @ExceptionHandler(Exception.class)

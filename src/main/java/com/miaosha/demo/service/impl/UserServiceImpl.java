@@ -8,6 +8,8 @@ import com.miaosha.demo.error.BusinessException;
 import com.miaosha.demo.error.EmBusinessError;
 import com.miaosha.demo.service.UserService;
 import com.miaosha.demo.service.model.UserModel;
+import com.miaosha.demo.validator.ValidationResult;
+import com.miaosha.demo.validator.ValidatorImpl;
 import org.apache.commons.lang3.StringUtils;
 import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -28,6 +30,9 @@ public class UserServiceImpl implements UserService {
 
     @Autowired
     private UserPasswordDoMapper userPasswordDoMapper;
+
+    @Autowired
+    private ValidatorImpl validator;
 
     @Override
     public UserModel getUserById(Integer id) {
@@ -52,11 +57,19 @@ public class UserServiceImpl implements UserService {
         }
 
         // 引入了apache common lang的依赖
-        if (StringUtils.isEmpty(userModel.getName()) || userModel.getGender() == null
+       /* if (StringUtils.isEmpty(userModel.getName()) || userModel.getGender() == null
                 || userModel.getAge() == null
                 || StringUtils.isEmpty(userModel.getTelephone())) {
             throw new BusinessException(EmBusinessError.PARAMETER_VALIDATION_ERROR);
         }
+*/
+        final ValidationResult result = validator.validate(userModel);
+        if (result.isHasErrors()) {
+            throw new BusinessException(EmBusinessError.PARAMETER_VALIDATION_ERROR, result.getErrMsg());
+        }
+
+
+
 
         // 持久化用户信息
         final UserDo userDo = convertFromUserModel(userModel);
@@ -67,6 +80,37 @@ public class UserServiceImpl implements UserService {
 
         final UserPasswordDo userPasswordDo = convertPasswordFromUserModel(userModel);
         userPasswordDoMapper.insertSelective(userPasswordDo);
+    }
+
+    @Override
+    public UserModel validateLogin(String telephone, String encrptpassword) throws BusinessException {
+        // 通过用户的telephone获取用户信息
+
+   /*
+        我写这个b玩意,  四肢发达
+        final UserDo userDo = userDoMapper.selectByTelephone(telephone);
+        final Integer userId = userDo.getId();
+
+        final UserPasswordDo userPasswordDo = userPasswordDoMapper.selectByUserId(userId);
+        boolean result = StringUtils.equals(userPasswordDo.getEncrptPassword()
+                , password);*/
+
+
+        final UserDo userDo = userDoMapper.selectByTelephone(telephone);
+        if (userDo == null) {
+            throw new BusinessException(EmBusinessError.USER_LOGIN_FAIL);
+        }
+
+        final UserPasswordDo userPasswordDo = userPasswordDoMapper.selectByUserId(userDo.getId());
+
+        final UserModel userModel = convertFromDataObject(userDo, userPasswordDo);
+
+        // 比对用户信息内加密的密码是否和传输进来的密码匹配
+        if (!StringUtils.equals(encrptpassword, userModel.getEncrptPassword())) {
+            throw new BusinessException(EmBusinessError.USER_LOGIN_FAIL);
+        }
+
+        return userModel;
     }
 
     // 实现UserModel --> UserDo
@@ -108,7 +152,6 @@ public class UserServiceImpl implements UserService {
 
         return userModel;
     }
-
 
 
 }

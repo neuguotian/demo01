@@ -33,7 +33,7 @@ import java.util.Random;
 @RestController("user")
 @RequestMapping("/user")
 @CrossOrigin(allowCredentials = "true", allowedHeaders = "*")
-public class UserController extends BaseController{
+public class UserController extends BaseController {
 
     @Autowired
     private UserService userService;
@@ -43,19 +43,38 @@ public class UserController extends BaseController{
     private HttpServletRequest httpServletRequest;
 
 
-    @RequestMapping(value = "/register", method = {RequestMethod.POST}, consumes = {CONTENT_TYPE_FORMED})
+    @RequestMapping(value = "/login", method = {RequestMethod.POST}, consumes = {CONTENT_TYPE_FORMED})
+    public CommonReturnType login(@RequestParam(name = "telephone") String telephone,
+                                  @RequestParam(name = "password") String password) throws BusinessException, UnsupportedEncodingException, NoSuchAlgorithmException {
+        // 入参校验
+        if (org.apache.commons.lang3.StringUtils.isEmpty(telephone)
+                || org.apache.commons.lang3.StringUtils.isEmpty(password)) {
+            throw new BusinessException(EmBusinessError.PARAMETER_VALIDATION_ERROR);
+        }
 
+        // 用户登录服务, 用来校验用户登录是否合法
+        final UserModel userModel = userService.validateLogin(telephone, encodeByMd5(password));
+
+        // 将登录凭证加入到用户登录成功的session中
+        this.httpServletRequest.getSession().setAttribute("IS_LOGIN", true);
+        this.httpServletRequest.getSession().setAttribute("LONGIN_USER", userModel);
+
+        return CommonReturnType.create(null);
+    }
+
+
+    @RequestMapping(value = "/register", method = {RequestMethod.POST}, consumes = {CONTENT_TYPE_FORMED})
     // 用户注册接口
-    public CommonReturnType register(@RequestParam(name="telephone") String telephone,
-                                     @RequestParam(name="otpCode") String otpCode,
-                                     @RequestParam(name="name") String name,
-                                     @RequestParam(name="gender") String gender,
-                                     @RequestParam(name="age") String age,
-                                     @RequestParam(name="password") String password) throws BusinessException, UnsupportedEncodingException, NoSuchAlgorithmException {
+    public CommonReturnType register(@RequestParam(name = "telephone") String telephone,
+                                     @RequestParam(name = "otpCode") String otpCode,
+                                     @RequestParam(name = "name") String name,
+                                     @RequestParam(name = "gender") String gender,
+                                     @RequestParam(name = "age") String age,
+                                     @RequestParam(name = "password") String password) throws BusinessException, UnsupportedEncodingException, NoSuchAlgorithmException {
 
 
         // 验证手机号和otpCode 符合
-        String inSessionOtpCode = (String)this.httpServletRequest.getSession().getAttribute(telephone);
+        String inSessionOtpCode = (String) this.httpServletRequest.getSession().getAttribute(telephone);
         if (!com.alibaba.druid.util.StringUtils.equals(otpCode, inSessionOtpCode)) {
             throw new BusinessException(EmBusinessError.PARAMETER_VALIDATION_ERROR, "短信验证码不符合");
         }
@@ -88,10 +107,9 @@ public class UserController extends BaseController{
     }
 
 
-
     // 用户获取otp短信接口
     @RequestMapping(value = "/getotp", method = {RequestMethod.POST}, consumes = {CONTENT_TYPE_FORMED})
-    public CommonReturnType getOtp(@RequestParam(name="telephone") String telephone) {
+    public CommonReturnType getOtp(@RequestParam(name = "telephone") String telephone) {
         // 按照一定的规则生成otp验证码
         final Random random = new Random();
         int randomInt = random.nextInt(99999);
@@ -111,7 +129,7 @@ public class UserController extends BaseController{
 
 
     @RequestMapping("/get")
-    public CommonReturnType getUser(@RequestParam(name="id") Integer id) throws BusinessException {
+    public CommonReturnType getUser(@RequestParam(name = "id") Integer id) throws BusinessException {
         // 调用service服务获取对应的id的用户对象并返回给前端
         final UserModel userModel = userService.getUserById(id);
         // 把整个领域模型返给前端, 很不专业
@@ -119,8 +137,8 @@ public class UserController extends BaseController{
 
         // 若获取的对应的用户信息不存在
         if (userModel == null) {
-            userModel.setEncrptPassword("2312");
-            //throw new BusinessException(EmBusinessError.USER_NOT_EXIST);
+            //userModel.setEncrptPassword("2312");
+            throw new BusinessException(EmBusinessError.USER_NOT_EXIST);
         }
 
 

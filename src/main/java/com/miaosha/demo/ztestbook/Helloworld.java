@@ -1,4 +1,4 @@
-package com.miaosha.demo.test;
+package com.miaosha.demo.ztestbook;
 
 public class Helloworld {
 

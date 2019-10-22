@@ -14,4 +14,10 @@ public interface UserService {
     UserModel getUserById(Integer id);
 
     void register(UserModel userModel) throws BusinessException;
+
+    /*
+
+    telephone是用手机号,  encrptpassword加密后的密码
+   */
+    UserModel validateLogin(String telephone, String encrptpassword) throws BusinessException;
 }

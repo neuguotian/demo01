@@ -18,7 +18,7 @@ import java.util.Map;
  * @Date 2019/10/21 19:56
  * @Author gt
  */
-public class BaseController {
+public class  BaseController {
     public final static String CONTENT_TYPE_FORMED = "application/x-www-form-urlencoded";
 
 

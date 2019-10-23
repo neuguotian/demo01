@@ -1,5 +1,7 @@
 package com.miaosha.demo;
 
+import com.miaosha.demo.dao.UserDoMapper;
+import com.miaosha.demo.dataobject.UserDo;
 import org.mybatis.spring.annotation.MapperScan;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.SpringApplication;
@@ -29,19 +31,19 @@ public class DemoApplication {
      PRIMARY KEY (id)
      ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci
      */
-    @Autowired
-    private UserDoMapper userDoMapper;
-
-    @RequestMapping("/")
-    public String hello() {
-        UserDo userDo = userDoMapper.selectByPrimaryKey(2);
-        if (userDo == null) {
-            return "userDo == null";
-        }
-
-        return userDo.getName();
-
-    }
+//    @Autowired
+//    private UserDoMapper userDoMapper;
+//
+//    @RequestMapping("/")
+//    public String hello() {
+//        UserDo userDo = userDoMapper.selectByPrimaryKey(2);
+//        if (userDo == null) {
+//            return "userDo == null";
+//        }
+//
+//        return userDo.getName();
+//
+//    }
 
     public static void main(String[] args) {
         SpringApplication.run(DemoApplication.class, args);

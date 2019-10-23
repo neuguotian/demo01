@@ -11,6 +11,8 @@ public interface ItemStockDoMapper {
 
     ItemStockDo selectByPrimaryKey(Integer id);
 
+    ItemStockDo selectByItemId(Integer itemId);
+
     int updateByPrimaryKeySelective(ItemStockDo record);
 
     int updateByPrimaryKey(ItemStockDo record);

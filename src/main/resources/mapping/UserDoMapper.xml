@@ -19,7 +19,7 @@
         from user_info
         where id = #{id,jdbcType=INTEGER}
     </select>
-    <select id="selectByTelephone" parameterType="java.lang.VARCHAR" resultMap="BaseResultMap">
+    <select id="selectByTelephone" parameterType="java.lang.String" resultMap="BaseResultMap">
         select
         <include refid="Base_Column_List"/>
         from user_info

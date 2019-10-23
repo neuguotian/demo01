@@ -1,8 +1,5 @@
 package com.miaosha.demo;
 
-import com.miaosha.demo.dao.UserDoMapper;
-import com.miaosha.demo.dataobject.UserDo;
-import org.apache.ibatis.annotations.Mapper;
 import org.mybatis.spring.annotation.MapperScan;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.SpringApplication;

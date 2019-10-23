@@ -11,11 +11,9 @@ public interface UserPasswordDoMapper {
 
     UserPasswordDo selectByPrimaryKey(Integer id);
 
-    UserPasswordDo selectByUserId (Integer userId);
-
     int updateByPrimaryKeySelective(UserPasswordDo record);
 
     int updateByPrimaryKey(UserPasswordDo record);
 
-
+    UserPasswordDo selectByUserId(Integer id);
 }

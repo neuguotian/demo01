@@ -13,10 +13,16 @@
     id, title, price, description, sales, img_url
   </sql>
   <select id="selectByPrimaryKey" parameterType="java.lang.Integer" resultMap="BaseResultMap">
-    select 
+  select
+  <include refid="Base_Column_List" />
+  from item
+  where id = #{id,jdbcType=INTEGER}
+</select>
+  <select id="listItem" resultMap="BaseResultMap">
+    select
     <include refid="Base_Column_List" />
     from item
-    where id = #{id,jdbcType=INTEGER}
+    order by sales DESC
   </select>
   <delete id="deleteByPrimaryKey" parameterType="java.lang.Integer">
     delete from item

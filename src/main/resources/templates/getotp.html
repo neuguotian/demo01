@@ -6,7 +6,7 @@
     <!-- 新 Bootstrap 核心 CSS 文件 -->
     <link href="https://cdn.staticfile.org/twitter-bootstrap/3.3.7/css/bootstrap.min.css" rel="stylesheet">
 
-    <!-- jQuery文件。务必在bootstrap.min.js 之前引入 -->
+    <!-- jQuery文件务必在bootstrap.min.js 之前引入 -->
     <script src="https://cdn.staticfile.org/jquery/2.1.1/jquery.min.js"></script>
 
     <!-- 最新的 Bootstrap 核心 JavaScript 文件 -->
@@ -63,11 +63,11 @@
                         alert("otp已经发送到了您的手机上, 请注意查收")
                         window.location.href="register.html";
                     } else {
-                       alert("otp发送失败， 原因为" + data.data.errMsg);
+                       alert("otp发送失败, 原因为" + data.data.errMsg);
                     }
                 },
                 error: function (data) {
-                    alert("otp发送失败， 原因为" + data.responseText);
+                    alert("otp发送失败, 原因为" + data.responseText);
                 }
 
 

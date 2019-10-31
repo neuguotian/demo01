@@ -7,10 +7,11 @@ import com.miaosha.demo.service.ItemService;
 import com.miaosha.demo.service.model.ItemModel;
 import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.*;
 
 import java.math.BigDecimal;
+import java.util.List;
+import java.util.stream.Collectors;
 
 /**
  * @Classname ItemController
@@ -26,8 +27,8 @@ public class ItemController extends BaseController {
     private ItemService itemService;
 
 
+    // 创建商品
     @RequestMapping(value = "/create", method = {RequestMethod.POST}, consumes = {CONTENT_TYPE_FORMED})
-    // stock没传, 与创建商品无关
     public CommonReturnType createItem(@RequestParam(name = "title")String title,
                                        @RequestParam(name = "description")String description,
                                        @RequestParam(name = "price") BigDecimal price,
@@ -48,6 +49,33 @@ public class ItemController extends BaseController {
         return CommonReturnType.create(itemVO);
     }
 
+
+    // 根基商品id,获取商品信息
+    @RequestMapping(value = "/get", method = {RequestMethod.GET})
+    public CommonReturnType getItem(@RequestParam(name = "id")Integer id) {
+        final ItemModel itemModel = itemService.getItemById(id);
+
+        final ItemVO itemVO = convertFromItemModel(itemModel);
+
+        return CommonReturnType.create(itemVO);
+    }
+
+
+    // 获取商品列表 item list
+    @RequestMapping(value = "/list", method = {RequestMethod.GET})
+    public CommonReturnType listItem() {
+        final List<ItemModel> itemModels = itemService.listItem();
+
+        // itemModels --> itemVos. 使用stream api
+        final List<ItemVO> itemVOList = itemModels.stream().map(itemModel -> {
+            final ItemVO itemVO = this.convertFromItemModel(itemModel);
+            return itemVO;
+        }).collect(Collectors.toList());
+
+        return CommonReturnType.create(itemVOList);
+    }
+
+
     /*
     ItemModel和ItemVO一样为什么还要转一下
     实际，企业中的两个很不一样, ItemVO可能会很大, 所有分层是必须的
@@ -62,6 +90,5 @@ public class ItemController extends BaseController {
 
         return itemVO;
     }
-
 
 }

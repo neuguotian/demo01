@@ -1,0 +1,94 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Title</title>
+    <!-- 新 Bootstrap 核心 CSS 文件 -->
+    <link href="https://cdn.staticfile.org/twitter-bootstrap/3.3.7/css/bootstrap.min.css" rel="stylesheet">
+
+    <!-- jQuery文件务必在bootstrap.min.js 之前引入 -->
+    <script src="https://cdn.staticfile.org/jquery/2.1.1/jquery.min.js"></script>
+
+    <!-- 最新的 Bootstrap 核心 JavaScript 文件 -->
+    <script src="https://cdn.staticfile.org/twitter-bootstrap/3.3.7/js/bootstrap.min.js"></script>
+
+
+</head>
+<body>
+<div class="content">
+<div class="col-md-2 col-md-offset-5 h3"> 商品列表浏览</div>
+
+    <div>
+        <table class="table">
+            <thead>
+                <tr>
+                    <th>商品名</th>
+                    <th>商图片</th>
+                    <th>商品描述</th>
+                    <th>商品价格</th>
+                    <th>商品库存</th>
+                    <th>商品销量</th>
+                </tr>
+            </thead>
+            <tbody id="container">
+
+            </tbody>
+        </table>
+    </div>
+
+</div>
+
+</body>
+
+<script>
+    var g_itemList = [];
+    jQuery(document).ready(function () {
+
+        // 定义全局商品数组信息
+
+
+            $.ajax({
+                type: "GET",
+                contentType: "application/x-www-form-urlencoded",
+                url: "http://localhost:8080/item/list",
+
+                xhrFields:{withCredentials:true},
+                success: function (data) {
+                    if (data.status == "success") {
+                        g_itemList = data.data;
+                        reloadDom();
+                        // window.location.href="login.html";
+                    } else {
+                        alert("1item list, 原因为" + data.data.errMsg);
+                    }
+                },
+                error: function (data) {
+                    alert("2item list, 原因为" + data.responseText);
+
+                }
+            });
+    });
+
+function reloadDom() {
+/*     这块涉及到js闭包问题*/
+    for (var i = 0; i < g_itemList.length; i++) {
+        var itemVO = g_itemList[i];
+        var dom = "<tr data-id='" +itemVO.id+ "' id='itemDetail"+itemVO.id+"'><td>" + itemVO.title + "</td><td><img style='width: 100px;height=auto;' src='"+ itemVO.imgUrl + "'></td><td>"
+        + itemVO.description + "</td><td>"
+        + itemVO.price + "</td><td>"
+        + itemVO.stock + "</td><td>"
+        + itemVO.sales + "</td></tr>";
+
+        $("#container").append($(dom))
+
+
+        // 党用户点击某一行时, 跳转到商品详情页
+        $("#itemDetail" + itemVO.id).on("click", function(e) {
+          window.location.href="getItem.html?id="+$(this).data("id");
+        })
+    }
+
+}
+
+</script>
+</html>

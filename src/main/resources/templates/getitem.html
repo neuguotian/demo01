@@ -58,6 +58,12 @@
             </div>
         </div>
 
+         <div>
+                <button id="createorder" type="submit">
+                    下单
+                </button>
+            </div>
+
 
 </div>
 
@@ -74,27 +80,53 @@
 
     jQuery(document).ready(function () {
        // 获取商品详情
+        $("#createorder").on("click", function() {
+           $.ajax({
+              type: "POST",
+              contentType: "application/x-www-form-urlencoded",
+              url: "http://localhost:8080/order/createorder",
+              data: {
+                 "itemId": g_itemVO.id,
+                 "amount": 1
+              },
+              xhrFields:{withCredentials:true},
+              success: function (data) {
+                  if (data.status ==  "success") {
+                        alert("下单成功");
+                        window.location.reload();
+                  } else {
+                      alert("1下单失败, 原因为" + data.data.errMsg);
+                      if (data.data.errCode == 20003){
+                          window.location.href="login.html";
+                      }
+                  }
+              },
+              error: function (data) {
+                  alert("下单失败2, 原因为" + data.responseText);
+              }
+          });
+        })
 
-            $.ajax({
-                type: "GET",
-                contentType: "application/x-www-form-urlencoded",
-                url: "http://localhost:8080/item/get",
-                data: {
-                   "id": getQueryString("id")
-                },
-                xhrFields:{withCredentials:true},
-                success: function (data) {
-                    if (data.status == "success") {
-                        g_itemVO = data.data
-                        reloadDom();
-                        // window.location.href="login.html";
-                    } else {
-                        alert("1item get, 原因为" + data.data.errMsg);
-                    }
-                },
-                error: function (data) {
-                    alert("2item get, 原因为" + data.responseText);
+        $.ajax({
+            type: "GET",
+            contentType: "application/x-www-form-urlencoded",
+            url: "http://localhost:8080/item/get",
+            data: {
+               "id": getQueryString("id")
+            },
+            xhrFields:{withCredentials:true},
+            success: function (data) {
+                if (data.status ==  "success") {
+                    g_itemVO = data.data
+                    reloadDom();
+                    // window.location.href="login.html";
+                } else {
+                    alert("1item get, 原因为" + data.data.errMsg);
                 }
+            },
+            error: function (data) {
+                alert("2item get, 原因为" + data.responseText);
+            }
 
 
         });

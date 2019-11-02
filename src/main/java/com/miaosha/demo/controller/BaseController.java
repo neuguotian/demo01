@@ -22,7 +22,7 @@ public class  BaseController {
     public final static String CONTENT_TYPE_FORMED = "application/x-www-form-urlencoded";
 
 
-    // 定义exceptionhandler解决为被controller层吸收的异常. （符合spring钩子类定义的设计思想）
+    // 定义exception handler解决为被controller层吸收的异常. （符合spring钩子类定义的设计思想）
     // 业务逻辑的错误, 并不是服务器端不能处理
     @ExceptionHandler(Exception.class)
     @ResponseStatus(HttpStatus.OK)
@@ -61,8 +61,8 @@ public class  BaseController {
             responseData.put("errCode", businessException.getErrCode());
             responseData.put("errMsg", businessException.getErrMsg());
         } else {
-            responseData.put("errCode", EmBusinessError.UNKNOW_ERROT.getErrCode());
-            responseData.put("errMsg", EmBusinessError.UNKNOW_ERROT.getErrMsg());
+            responseData.put("errCode", EmBusinessError.UNKNOWN_ERROR.getErrCode());
+            responseData.put("errMsg", EmBusinessError.UNKNOWN_ERROR.getErrMsg());
         }
 
         return CommonReturnType.create(responseData, "fail");

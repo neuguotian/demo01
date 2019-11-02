@@ -122,6 +122,24 @@ public class ItemServiceImpl implements ItemService {
         return itemModel;
     }
 
+    @Override
+    @Transactional
+    public boolean decreaseStock(Integer itemId, Integer amount) throws BusinessException {
+        final int affectedRow = itemStockDoMapper.decreaseStock(itemId, amount);
+        if (affectedRow > 0)
+            // 受影响的行数>0 , 更新库存成功
+            return true;
+
+        // 更新库存失败
+        return false;
+    }
+
+    @Override
+    @Transactional
+    public void increaseSales(Integer itemId, Integer amount) throws BusinessException {
+        itemDoMapper.increaseSales(itemId, amount);
+    }
+
     private ItemModel convertModelFromDataObject(ItemDo itemDo, ItemStockDo itemStockDo) {
         if (itemDo == null) {
             return null;

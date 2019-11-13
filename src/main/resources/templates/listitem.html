@@ -80,7 +80,7 @@ function reloadDom() {
         $("#container").append($(dom))
 
 
-        // 党用户点击某一行时, 跳转到商品详情页
+        // 当用户点击某一行时, 跳转到商品详情页
         $("#itemDetail" + itemVO.id).on("click", function(e) {
           window.location.href="getItem.html?id="+$(this).data("id");
         })

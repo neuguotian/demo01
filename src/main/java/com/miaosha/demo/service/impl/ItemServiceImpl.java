@@ -9,7 +9,9 @@ import com.miaosha.demo.dataobject.UserPasswordDo;
 import com.miaosha.demo.error.BusinessException;
 import com.miaosha.demo.error.EmBusinessError;
 import com.miaosha.demo.service.ItemService;
+import com.miaosha.demo.service.PromoService;
 import com.miaosha.demo.service.model.ItemModel;
+import com.miaosha.demo.service.model.PromoModel;
 import com.miaosha.demo.service.model.UserModel;
 import com.miaosha.demo.validator.ValidationResult;
 import com.miaosha.demo.validator.ValidatorImpl;
@@ -38,6 +40,9 @@ public class ItemServiceImpl implements ItemService {
 
     @Autowired
     private ItemStockDoMapper itemStockDoMapper;
+
+    @Autowired
+    private PromoService promoService;
 
     @Override
     @Transactional
@@ -118,6 +123,12 @@ public class ItemServiceImpl implements ItemService {
         // dataObject
         final ItemModel itemModel = convertModelFromDataObject(itemDo, itemStockDo);
 
+        // 获取商品的秒杀信息
+        final PromoModel promoModel = promoService.getPromoByItemId(item_id);
+        // 秒杀活动存在,没有结束 . 1没开始 2正在进行
+        if (promoModel != null && promoModel.getStatus().intValue() != 3) {
+            itemModel.setPromoModel(promoModel);
+        }
 
         return itemModel;
     }

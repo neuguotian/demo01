@@ -6,7 +6,6 @@ import com.miaosha.demo.response.CommonReturnType;
 import com.miaosha.demo.service.OrderService;
 import com.miaosha.demo.service.model.OrderModel;
 import com.miaosha.demo.service.model.UserModel;
-import org.omg.CORBA.COMM_FAILURE;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
 
@@ -31,6 +30,7 @@ public class OrderController extends BaseController{
     // 封装下单请求
     @RequestMapping(value = "/createorder", method = {RequestMethod.POST}, consumes = {CONTENT_TYPE_FORMED})
     public CommonReturnType createOrder(@RequestParam(name = "itemId")Integer itemId,
+                                        @RequestParam(name = "promoId", required = false)Integer promoId,
                                         @RequestParam(name = "amount")Integer amount) throws BusinessException {
         // login成功的时候, 把登录成功信息价到了 session中
         final Boolean is_login = (Boolean)httpServletRequest.getSession().getAttribute("IS_LOGIN");
@@ -41,7 +41,7 @@ public class OrderController extends BaseController{
         final UserModel userModel = (UserModel)httpServletRequest.getSession().getAttribute("LOGIN_USER");
 
         // 确认用户已经登录, 下单
-        final OrderModel orderModel = orderService.createOrder(userModel.getId(), itemId, amount);
+        final OrderModel orderModel = orderService.createOrder(userModel.getId(), itemId, promoId, amount);
 
 
         return CommonReturnType.create(orderModel);

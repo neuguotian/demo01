@@ -5,6 +5,8 @@ import com.miaosha.demo.error.BusinessException;
 import com.miaosha.demo.response.CommonReturnType;
 import com.miaosha.demo.service.ItemService;
 import com.miaosha.demo.service.model.ItemModel;
+import org.joda.time.format.DateTimeFormat;
+import org.joda.time.format.DateTimeFormatter;
 import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
@@ -29,12 +31,12 @@ public class ItemController extends BaseController {
 
     // 创建商品
     @RequestMapping(value = "/create", method = {RequestMethod.POST}, consumes = {CONTENT_TYPE_FORMED})
-    public CommonReturnType createItem(@RequestParam(name = "title")String title,
-                                       @RequestParam(name = "description")String description,
+    public CommonReturnType createItem(@RequestParam(name = "title") String title,
+                                       @RequestParam(name = "description") String description,
                                        @RequestParam(name = "price") BigDecimal price,
-                                       @RequestParam(name = "stock")Integer stock,
-                                       @RequestParam(name = "imgUrl")String imgUrl
-                                       ) throws BusinessException {
+                                       @RequestParam(name = "stock") Integer stock,
+                                       @RequestParam(name = "imgUrl") String imgUrl
+    ) throws BusinessException {
         // 封装service请求用来创建商品
         final ItemModel itemModel = new ItemModel();
         itemModel.setTitle(title);
@@ -52,7 +54,7 @@ public class ItemController extends BaseController {
 
     // 根基商品id,获取商品信息
     @RequestMapping(value = "/get", method = {RequestMethod.GET})
-    public CommonReturnType getItem(@RequestParam(name = "id")Integer id) {
+    public CommonReturnType getItem(@RequestParam(name = "id") Integer id) {
         final ItemModel itemModel = itemService.getItemById(id);
 
         final ItemVO itemVO = convertFromItemModel(itemModel);
@@ -87,8 +89,17 @@ public class ItemController extends BaseController {
 
         final ItemVO itemVO = new ItemVO();
         BeanUtils.copyProperties(itemModel, itemVO);
+        if (itemModel.getPromoModel() != null) {
+            // 有正在进行或即将进行的秒杀活动
+            itemVO.setPromoStatus(itemModel.getPromoModel().getStatus());
+            itemVO.setPromoId(itemModel.getPromoModel().getId());
+            itemVO.setPromoPrice(itemModel.getPromoModel().getPromoItemPrice());
+            itemVO.setPromoStartDate(itemModel.getPromoModel().getStartDate().toString(DateTimeFormat.forPattern("yyyy-MM-dd HH:mm:ss")));
+        } else {
+            itemVO.setPromoStatus(0);
+        }
 
-        return itemVO;
+            return itemVO;
     }
 
 }

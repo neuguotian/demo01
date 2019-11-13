@@ -44,7 +44,10 @@
         <!--<table schema="root" tableName="item_stock" domainObjectName="ItemStockDo" enableCountByExample="false"-->
                <!--enableUpdateByExample="false" enableDeleteByExample="false"-->
                <!--enableSelectByExample="false" selectByExampleQueryId="false"></table>-->
-        <table schema="root" tableName="sequence_info" domainObjectName="SequenceDo" enableCountByExample="false"
+       <!-- <table schema="root" tableName="sequence_info" domainObjectName="SequenceDo" enableCountByExample="false"
+               enableUpdateByExample="false" enableDeleteByExample="false"
+               enableSelectByExample="false" selectByExampleQueryId="false"></table>-->
+        <table schema="root" tableName="promo" domainObjectName="PromoDo" enableCountByExample="false"
                enableUpdateByExample="false" enableDeleteByExample="false"
                enableSelectByExample="false" selectByExampleQueryId="false"></table>
 

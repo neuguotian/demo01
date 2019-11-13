@@ -5,11 +5,13 @@ server:
 spring:
   datasource:
     name: miaosha
-    url: jdbc:mysql://localhost:3306/miaosha?useUnicode=true&characterEncoding=UTF-8&useSSL=false&serverTimezone=UTC
+    url: jdbc:mysql://localhost:3306/miaosha?useUnicode=true&characterEncoding=UTF-8&useSSL=false&serverTimezone=Asia/Shanghai
     username: root
     password: guotian
     type: com.alibaba.druid.pool.DruidDataSource
     driverClassName: com.mysql.jdbc.Driver
+
+
 
 mybatis:
   mapper-locations: classpath*:mapping/*Mapper.xml
